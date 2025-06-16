@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "common";
+
+enum Code {
+  Common = 0;
+  Success = 200;
+  Unauthorized = 401;
+  Err = 500;
+  DBErr = 501;
+  PasswordErr = 502;
+  AlreadyExists = 503;
+}

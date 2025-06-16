@@ -1,0 +1,19 @@
+server:
+  port: 8888
+  name: learn_hertz
+  log_level: info
+  swagger: true
+auth:
+  excludedPaths:
+    - /api/user/login
+    - /api/ping
+    - /api/metrics
+admin:
+  username: admin
+  password: admin123456
+jwt:
+  secret: 123qazwsxedc456
+  expire_time: 168
+db:
+  type: sqlite3
+  database: test

@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+// 该文件定义了用户相关的 Protobuf 消息和服务
+
+package basic.user;
+
+import "common/api.proto";
+import "common/code.proto";
+
+option go_package = "basic/user";
+
+message CreateUserReq {
+  string username = 1 [
+    (api.body) = "username",
+    (api.form) = "username",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];  // 必传字段（proto3 默认规则）
+
+  optional string email = 2 [
+    (api.body) = "email",
+    (api.form) = "email",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];  // 可选字段
+}
+
+// 删除用户请求消息
+message DeleteUserReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];  // 必传字段
+}
+
+// 更新用户请求消息
+message UpdateUserReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  optional string username = 2 [
+    (api.body) = "username",
+    (api.form) = "username",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];  // 必传字段（proto3 默认规则）
+
+  optional string email = 3 [
+    (api.body) = "email",
+    (api.form) = "email",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];  // 可选字段（可传可不传）
+}
+
+message ChangePasswdReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  string password = 2 [
+    (api.body) = "password",
+    (api.form) = "password",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];
+}
+
+message CommonUserResp{
+  Code code = 1;
+  string msg = 2;
+}
+
+// 用户登录请求消息
+message LoginUserReq {
+  string Username = 1 [
+    (api.body) = "username",
+    (api.form) = "username",
+    (api.vd) = "(len($) > 0)"
+  ];  // 必传字段
+
+  string Password = 2 [
+    (api.body) = "password",
+    (api.form) = "password",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  bool RememberMe = 3 [
+    (api.body) = "remember_me",
+    (api.form) = "remember_me",
+    (api.vd) = ""
+  ];
+}
+
+message UserLoginResp {
+  Code code = 1;
+  string msg = 2;
+  UserLoginData data = 3;
+}
+
+message UserListReq {
+  int32 page = 1 [
+    (api.query) = "page",
+    (api.vd) = "$ >= 1"
+  ];
+
+  int32 page_size = 2 [
+    (api.query) = "page_size",
+    (api.vd) = "$ >= 1 && $ <= 100"
+  ];
+
+  optional string username = 3 [
+    (api.query) = "username",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ]; // 可选用户名过滤字段
+
+  optional string email = 4 [
+    (api.query) = "email",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];
+}
+
+message UserListResp {
+  Code code = 1;
+  string msg = 2;
+  int64 total = 3;
+  repeated UserData data = 4;
+}
+
+message UserData {
+  string user_id = 1;
+  string username = 2;
+  string email = 3;
+}
+
+message UserLoginData {
+  string token = 1;
+}
+
+// 用户信息请求消息
+message UserInfoReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];  // 必传字段
+}
+
+message UserInfoResp {
+  Code code = 1;
+  string msg = 2;
+  UserData data = 3;
+}
+
+// 用户处理服务
+service UserHandler {
+  rpc CreateUser(CreateUserReq) returns(CommonUserResp) {
+    option (api.put) = "/api/user/add";
+  }
+
+  rpc DeleteUser(DeleteUserReq) returns(CommonUserResp) {
+    option (api.delete) = "/api/user/delete/:user_id";
+  }
+
+  rpc UpdateUser(UpdateUserReq) returns(CommonUserResp) {
+    option (api.post) = "/api/user/update/:user_id";
+  }
+
+  rpc ChangePasswd(ChangePasswdReq) returns(CommonUserResp) {
+    option (api.post) = "/api/user/change_passwd/:user_id";
+  }
+
+  rpc UserLogin(LoginUserReq) returns(UserLoginResp) {
+    option (api.post) = "/api/user/login";
+  }
+
+  rpc UserList(UserListReq) returns(UserListResp) {
+    option (api.get) = "/api/user/list";
+  }
+
+  rpc UserInfo(UserInfoReq) returns(UserInfoResp) {
+    option (api.get) = "/api/user/info/:user_id";
+  }
+}

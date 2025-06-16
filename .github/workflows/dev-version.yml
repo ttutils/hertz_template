@@ -1,0 +1,65 @@
+name: dev-version
+on:
+  push:
+    branches:
+      - main   # 监听 main 分支
+      - master  # 监听 master 分支
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  docker-rootful:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write # to publish to ghcr.io
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout web
+        uses: actions/checkout@v4
+        with:
+          repository: buyfakett/react_admin_template
+          token: ${{ secrets.RELEASE_TOKEN }}
+          path: web
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: build web
+        run: |
+          cd web/
+          npm install -g pnpm
+          pnpm install
+          pnpm run build
+          cd ..
+          mkdir static/
+          cp -r web/dist/* static/
+          rm -rf web/
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: |-
+            buyfakett/hertz_template
+            ghcr.io/buyfakett/hertz_template
+          tags: |
+            type=raw,value=dev
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GHCR using PAT
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: build rootful docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

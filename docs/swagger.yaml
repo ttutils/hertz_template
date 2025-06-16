@@ -1,0 +1,491 @@
+basePath: /
+definitions:
+  book.BookListData:
+    properties:
+      author:
+        type: string
+      book_id:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      year:
+        type: string
+    type: object
+  book.BookListResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      data:
+        items:
+          $ref: '#/definitions/book.BookListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  book.CommonBookResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      msg:
+        type: string
+    type: object
+  book.CreateBookReq:
+    properties:
+      author:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      year:
+        type: string
+    type: object
+  book.UpdateBookReq:
+    properties:
+      author:
+        type: string
+      book_id:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      year:
+        type: string
+    type: object
+  common.Code:
+    enum:
+    - 0
+    - 200
+    - 401
+    - 500
+    - 501
+    - 502
+    - 503
+    type: integer
+    x-enum-varnames:
+    - Code_Common
+    - Code_Success
+    - Code_Unauthorized
+    - Code_Err
+    - Code_DBErr
+    - Code_PasswordErr
+    - Code_AlreadyExists
+  user.ChangePasswdReq:
+    properties:
+      password:
+        type: string
+      user_id:
+        type: string
+    type: object
+  user.CommonUserResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      msg:
+        type: string
+    type: object
+  user.CreateUserReq:
+    properties:
+      email:
+        description: 可选字段
+        type: string
+      username:
+        description: 必传字段（proto3 默认规则）
+        type: string
+    type: object
+  user.LoginUserReq:
+    properties:
+      password:
+        type: string
+      remember_me:
+        type: boolean
+      username:
+        description: 必传字段
+        type: string
+    type: object
+  user.UpdateUserReq:
+    properties:
+      email:
+        description: 可选字段（可传可不传）
+        type: string
+      user_id:
+        type: string
+      username:
+        description: 必传字段（proto3 默认规则）
+        type: string
+    type: object
+  user.UserData:
+    properties:
+      email:
+        type: string
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  user.UserInfoResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      data:
+        $ref: '#/definitions/user.UserData'
+      msg:
+        type: string
+    type: object
+  user.UserListResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      data:
+        items:
+          $ref: '#/definitions/user.UserData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  user.UserLoginData:
+    properties:
+      token:
+        type: string
+    type: object
+  user.UserLoginResp:
+    properties:
+      code:
+        $ref: '#/definitions/common.Code'
+      data:
+        $ref: '#/definitions/user.UserLoginData'
+      msg:
+        type: string
+    type: object
+info:
+  contact:
+    name: buyfakett
+    url: https://github.com/buyfakett
+  description: learn hertz by [buyfakett](https://github.com/buyfakett).
+  title: hertz_template
+  version: 0.1.1
+paths:
+  /api/book/add:
+    put:
+      consumes:
+      - application/json
+      description: 创建书籍
+      parameters:
+      - description: 书籍信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/book.CreateBookReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建书籍
+      tags:
+      - 书籍
+  /api/book/delete/{book_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除书籍
+      parameters:
+      - description: 书籍ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除书籍
+      tags:
+      - 书籍
+  /api/book/list:
+    get:
+      consumes:
+      - application/json
+      description: 书籍列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 书名
+        in: query
+        name: title
+        type: string
+      - description: 作者
+        in: query
+        name: author
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/book.BookListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 书籍列表
+      tags:
+      - 书籍
+  /api/book/update/{book_id}:
+    post:
+      consumes:
+      - application/json
+      description: 更新书籍
+      parameters:
+      - description: 书籍ID
+        in: path
+        name: book_id
+        required: true
+        type: string
+      - description: 更新信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/book.UpdateBookReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新书籍
+      tags:
+      - 书籍
+  /api/ping:
+    get:
+      consumes:
+      - application/json
+      description: 测试网络接口
+      produces:
+      - application/json
+      responses: {}
+      summary: 测试网络接口
+      tags:
+      - 测试
+  /api/user/add:
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建用户
+      tags:
+      - 用户
+  /api/user/change_passwd/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: 修改用户密码
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: 密码信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.ChangePasswdReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户密码
+      tags:
+      - 用户
+  /api/user/delete/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: 删除用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - 用户
+  /api/user/info/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: 用户信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserInfoResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户信息
+      tags:
+      - 用户
+  /api/user/list:
+    get:
+      consumes:
+      - application/json
+      description: 用户列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 用户名
+        in: query
+        name: username
+        type: string
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户列表
+      tags:
+      - 用户
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      parameters:
+      - description: 登录凭证
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserLoginResp'
+      summary: 用户登录
+      tags:
+      - 用户
+  /api/user/update/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: 更新用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: 更新信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户
+      tags:
+      - 用户
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: authorization
+    type: apiKey
+swagger: "2.0"

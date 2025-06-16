@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+// 该文件定义了图书相关的 Protobuf 消息和服务
+
+package basic.book;
+
+import "common/api.proto";
+import "common/code.proto";
+
+option go_package = "basic/book";
+
+// 创建图书请求
+message CreateBookReq {
+  string title = 1 [
+    (api.body) = "title",
+    (api.form) = "title",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];
+
+  string author = 2 [
+    (api.body) = "author",
+    (api.form) = "author",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];
+
+  string year = 3 [
+    (api.body) = "year",
+    (api.form) = "year",
+    (api.vd) = "(len($) == 7 && $ >= '1970-01' && $ <= '2100-12')"
+  ];
+
+  optional string summary = 4 [
+    (api.body) = "summary",
+    (api.form) = "summary",
+    (api.vd) = "($ == nil || len($) < 1000)"
+  ];
+}
+
+// 删除图书请求
+message DeleteBookReq {
+  string book_id = 1 [
+    (api.path) = "book_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+}
+
+// 更新图书请求
+message UpdateBookReq {
+  string book_id = 1 [
+    (api.path) = "book_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  optional string title = 2 [
+    (api.body) = "title",
+    (api.form) = "title",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];
+
+  optional string author = 3 [
+    (api.body) = "author",
+    (api.form) = "author",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];
+
+  optional string year = 4 [
+    (api.body) = "year",
+    (api.form) = "year",
+    (api.vd) = "($ == nil || (len($) == 7 && $ >= '1970-01' && $ <= '2100-12'))"
+  ];
+
+  optional string summary = 5 [
+    (api.body) = "summary",
+    (api.form) = "summary",
+    (api.vd) = "($ == nil || len($) < 1000)"
+  ];
+}
+
+// 通用响应
+message CommonBookResp {
+  Code code = 1;
+  string msg = 2;
+}
+
+// 图书列表请求
+message BookListReq {
+  int32 page = 1 [
+    (api.query) = "page",
+    (api.vd) = "$ >= 1"
+  ];
+
+  int32 page_size = 2 [
+    (api.query) = "page_size",
+    (api.vd) = "$ >= 1 && $ <= 100"
+  ];
+
+  optional string title = 3 [
+    (api.query) = "title",
+    (api.vd) = "($ == nil || len($) < 255)"
+  ];
+
+  optional string author = 4 [
+    (api.query) = "author",
+    (api.vd) = "($ == nil || len($) < 255)"
+  ];
+}
+
+// 图书列表响应
+message BookListResp {
+  Code code = 1;
+  string msg = 2;
+  int64 total = 3;
+  repeated BookListData data = 4;
+}
+
+message BookListData {
+  string book_id = 1;
+  string title = 2;
+  string author = 3;
+  string year = 4;
+  string summary = 5;
+}
+
+// 图书服务定义
+service BookHandler {
+  rpc CreateBook(CreateBookReq) returns (CommonBookResp) {
+    option (api.put) = "/api/book/add";
+  }
+
+  rpc DeleteBook(DeleteBookReq) returns (CommonBookResp) {
+    option (api.delete) = "/api/book/delete/:book_id";
+  }
+
+  rpc UpdateBook(UpdateBookReq) returns (CommonBookResp) {
+    option (api.post) = "/api/book/update/:book_id";
+  }
+
+  rpc BookList(BookListReq) returns (BookListResp) {
+    option (api.get) = "/api/book/list";
+  }
+}
