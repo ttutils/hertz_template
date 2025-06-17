@@ -213,7 +213,7 @@ const docTemplate = `{
             }
         },
         "/api/user/add": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -298,7 +298,7 @@ const docTemplate = `{
             }
         },
         "/api/user/delete/{user_id}": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []

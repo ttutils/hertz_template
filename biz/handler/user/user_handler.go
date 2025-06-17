@@ -24,7 +24,7 @@ import (
 // @Param req body user.CreateUserReq true "用户信息"
 // @Success 200 {object} user.CommonUserResp
 // @Security ApiKeyAuth
-// @router /api/user/add [POST]
+// @router /api/user/add [PUT]
 func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.CreateUserReq
@@ -88,7 +88,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 // @Param user_id path string true "用户ID"
 // @Success 200 {object} user.CommonUserResp
 // @Security ApiKeyAuth
-// @router /api/user/delete/{user_id} [POST]
+// @router /api/user/delete/{user_id} [DELETE]
 func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.DeleteUserReq

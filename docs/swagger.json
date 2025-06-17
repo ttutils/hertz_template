@@ -209,7 +209,7 @@
             }
         },
         "/api/user/add": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -294,7 +294,7 @@
             }
         },
         "/api/user/delete/{user_id}": {
-            "post": {
+            "delete": {
                 "security": [
                     {
                         "ApiKeyAuth": []
