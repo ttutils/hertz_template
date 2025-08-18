@@ -1,13 +1,7 @@
 server:
   port: 8888
-  name: learn_hertz
   log_level: info
   swagger: true
-auth:
-  excludedPaths:
-    - /api/user/login
-    - /api/ping
-    - /api/metrics
 admin:
   username: admin
   password: admin123456

@@ -170,7 +170,7 @@ info:
     url: https://github.com/buyfakett
   description: learn hertz by [buyfakett](https://github.com/buyfakett).
   title: hertz_template
-  version: 0.1.1
+  version: 1.0.0
 paths:
   /api/book/add:
     put:
@@ -293,6 +293,17 @@ paths:
       - application/json
       responses: {}
       summary: 测试网络接口
+      tags:
+      - 测试
+  /api/server_info:
+    get:
+      consumes:
+      - application/json
+      description: 服务信息
+      produces:
+      - application/json
+      responses: {}
+      summary: 服务信息
       tags:
       - 测试
   /api/user/add:

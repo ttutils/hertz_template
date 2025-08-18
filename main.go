@@ -6,11 +6,9 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/hertz-contrib/swagger"
-	swaggerFiles "github.com/swaggo/files"
 	"hertz_template/biz/dal"
 	"hertz_template/biz/mw"
+	"hertz_template/docs"
 	"hertz_template/utils/config"
 	"hertz_template/utils/logger"
 	"log"
@@ -19,12 +17,17 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/hertz-contrib/swagger"
+	swaggerFiles "github.com/swaggo/files"
+
+	_ "hertz_template/docs"
+
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/hertz-contrib/cors"
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
-	_ "hertz_template/docs"
 )
 
 //go:embed config/default.yaml
@@ -34,7 +37,7 @@ var defaultConfigContent []byte
 var staticFS embed.FS
 
 // @title hertz_template
-// @version 0.1.1
+// @version 1.0.0
 // @description learn hertz by [buyfakett](https://github.com/buyfakett).
 
 // @contact.name buyfakett
@@ -86,6 +89,9 @@ func main() {
 		}
 		return nil
 	})
+
+	docs.SwaggerInfo.Version = config.Cfg.Server.Version
+	docs.SwaggerInfo.Title = config.Cfg.Server.Name
 
 	// 注册swagger文档
 	if config.Cfg.Server.EnableSwagger {

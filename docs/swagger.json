@@ -10,7 +10,7 @@
             "name": "buyfakett",
             "url": "https://github.com/buyfakett"
         },
-        "version": "0.1.1"
+        "version": "1.0.0"
     },
     "basePath": "/",
     "paths": {
@@ -205,6 +205,22 @@
                     "测试"
                 ],
                 "summary": "测试网络接口",
+                "responses": {}
+            }
+        },
+        "/api/server_info": {
+            "get": {
+                "description": "服务信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试"
+                ],
+                "summary": "服务信息",
                 "responses": {}
             }
         },

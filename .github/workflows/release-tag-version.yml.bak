@@ -50,7 +50,21 @@ jobs:
           gh-cli-version: 2.71.2
       - name: create github release
         run: |
-          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --notes-from-tag dist/release/*
+          # 1. 创建或跳过Release创建
+          if ! gh release view ${{ github.ref_name }} &>/dev/null; then
+            gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --notes-from-tag
+          fi
+
+          # 2. 智能清理旧文件
+          for file in dist/release/*; do
+            filename=$(basename "$file")
+            gh release delete-asset ${{ github.ref_name }} "$filename" --yes 2>/dev/null || true
+          done
+
+          # 3. 上传新文件
+          gh release upload ${{ github.ref_name }} dist/release/* --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
   docker-rootful:
@@ -90,12 +104,10 @@ jobs:
             ghcr.io/buyfakett/hertz_template
           # this will generate tags in the following format:
           # latest
-          # 1
           # 1.2
           # 1.2.3
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
       - name: Login to Docker Hub
         uses: docker/login-action@v3

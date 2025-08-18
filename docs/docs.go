@@ -212,6 +212,22 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/server_info": {
+            "get": {
+                "description": "服务信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试"
+                ],
+                "summary": "服务信息",
+                "responses": {}
+            }
+        },
         "/api/user/add": {
             "put": {
                 "security": [
@@ -766,7 +782,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.1.1",
+	Version:          "1.0.0",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{"http"},

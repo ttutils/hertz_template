@@ -13,6 +13,7 @@ import (
 type ServerConfig struct {
 	Port          int    `mapstructure:"port"`
 	Name          string `mapstructure:"name"`
+	Version       string `mapstructure:"version"`
 	LogLevel      string `mapstructure:"log_level"`
 	EnableSwagger bool   `mapstructure:"swagger"`
 }
@@ -94,4 +95,9 @@ func InitConfig(defaultConfigContent []byte) {
 		fmt.Println("解析配置失败:", err)
 		os.Exit(1)
 	}
+
+	// 7. 设置默认值
+	Cfg.Auth = GetDefaultAuthConfig()
+	Cfg.Server.Name = ServerName
+	Cfg.Server.Version = Version
 }
