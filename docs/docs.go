@@ -196,6 +196,22 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/is_demo": {
+            "get": {
+                "description": "获取demo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试"
+                ],
+                "summary": "获取demo",
+                "responses": {}
+            }
+        },
         "/api/ping": {
             "get": {
                 "description": "测试网络接口",

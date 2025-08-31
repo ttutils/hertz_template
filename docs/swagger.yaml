@@ -284,6 +284,17 @@ paths:
       summary: 更新书籍
       tags:
       - 书籍
+  /api/is_demo:
+    get:
+      consumes:
+      - application/json
+      description: 获取demo
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取demo
+      tags:
+      - 测试
   /api/ping:
     get:
       consumes:
