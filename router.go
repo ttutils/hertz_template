@@ -10,4 +10,5 @@ func customizedRegister(r *server.Hertz) {
 	r.GET("/api/ping", handler.Ping)
 	r.GET("/api/metrics", handler.MetricsHandler)
 	r.GET("/api/server_info", handler.ServerInfo)
+	r.GET("/api/is_demo", handler.GetDemo)
 }

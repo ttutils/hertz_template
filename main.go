@@ -10,6 +10,7 @@ import (
 	"hertz_template/biz/mw"
 	"hertz_template/docs"
 	"hertz_template/utils/config"
+	"hertz_template/utils/cron"
 	"hertz_template/utils/logger"
 	"log"
 	"net"
@@ -77,13 +78,13 @@ func main() {
 	h.OnRun = append(h.OnRun, func(ctx context.Context) error {
 		// 遍历所有接口地址，找到第一个非回环 IPv4
 		addrs, _ := net.InterfaceAddrs() // :contentReference[oaicite:0]{index=0}
-		hlog.Debugf("🚀 服务启动在 http://localhost:%d", config.Cfg.Server.Port)
+		hlog.Debugf("%s %s 服务启动在 http://localhost:%d", config.Cfg.Server.Name, config.Cfg.Server.Version, config.Cfg.Server.Port)
 		for _, addr := range addrs {
 			if ipNet, ok := addr.(*net.IPNet); ok &&
 				!ipNet.IP.IsLoopback() &&
 				ipNet.IP.To4() != nil {
 				ip := ipNet.IP.String()
-				hlog.Infof("🚀 服务启动在 http://%s:%d", ip, config.Cfg.Server.Port)
+				hlog.Infof("%s %s 服务启动在 http://%s:%d", config.Cfg.Server.Name, config.Cfg.Server.Version, ip, config.Cfg.Server.Port)
 				break
 			}
 		}
@@ -95,8 +96,13 @@ func main() {
 
 	// 注册swagger文档
 	if config.Cfg.Server.EnableSwagger {
-		hlog.Info("🚀 Swagger文档已启用")
+		hlog.Info("Swagger文档已启用")
 		h.GET("/api/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
+	}
+
+	if config.Cfg.Server.IsDemo {
+		hlog.Info("演示模式已启用")
+		go cron.CleanupTask()
 	}
 
 	// 注册鉴权中间件

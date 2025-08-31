@@ -11,11 +11,13 @@ import (
 )
 
 type ServerConfig struct {
-	Port          int    `mapstructure:"port"`
-	Name          string `mapstructure:"name"`
-	Version       string `mapstructure:"version"`
-	LogLevel      string `mapstructure:"log_level"`
-	EnableSwagger bool   `mapstructure:"swagger"`
+	Port           int    `mapstructure:"port"`
+	Name           string `mapstructure:"name"`
+	Version        string `mapstructure:"version"`
+	LogLevel       string `mapstructure:"log_level"`
+	EnableSwagger  bool   `mapstructure:"swagger"`
+	IsDemo         bool   `mapstructure:"is_demo"`
+	DeleteDataCron string `mapstructure:"delete_data_cron"`
 }
 
 type DbConfig struct {
@@ -100,4 +102,5 @@ func InitConfig(defaultConfigContent []byte) {
 	Cfg.Auth = GetDefaultAuthConfig()
 	Cfg.Server.Name = ServerName
 	Cfg.Server.Version = Version
+	Cfg.Server.DeleteDataCron = "0 1 * * * *"
 }

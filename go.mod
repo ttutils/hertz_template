@@ -5,12 +5,14 @@ go 1.25.0
 require (
 	github.com/cloudwego/hertz v0.10.2
 	github.com/glebarez/sqlite v1.11.0
+	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8
 	github.com/hertz-contrib/cors v0.1.0
 	github.com/hertz-contrib/gzip v0.0.3
 	github.com/hertz-contrib/jwt v1.0.4
 	github.com/hertz-contrib/logger/accesslog v0.0.0-20241107070745-e4ce8c54dd97
 	github.com/hertz-contrib/swagger v0.1.1
 	github.com/prometheus/client_golang v1.23.0
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/spf13/pflag v1.0.7
 	github.com/spf13/viper v1.20.1
 	github.com/swaggo/files v1.0.1

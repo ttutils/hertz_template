@@ -2,6 +2,7 @@ server:
   port: 8888
   log_level: info
   swagger: true
+  is_demo: false
 admin:
   username: admin
   password: admin123456
